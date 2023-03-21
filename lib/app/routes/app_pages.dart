@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:cashier_pyongyang/app/modules/home/bindings/home_binding.dart';
-import 'package:cashier_pyongyang/app/modules/home/views/home_view.dart';
+import 'package:cashier_pyongyang/app/modules/home/views/v-home.dart';
 
 part 'app_routes.dart';
 
@@ -13,7 +13,7 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () => HomeView(),
+      page: () => VHome(),
       binding: HomeBinding(),
     ),
   ];

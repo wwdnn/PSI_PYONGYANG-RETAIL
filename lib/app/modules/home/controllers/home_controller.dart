@@ -1,31 +1,34 @@
+import 'dart:convert';
+
+import 'package:cashier_pyongyang/app/providers/p-barang.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
-
-  final count = 0.obs;
-
-  // buatkan array untuk menampung data menu
-  final listMenu = [1, 2, 3, 4].obs;
-
+  List<dynamic> dataBarang = [].obs;
   String barcodeResult = "";
 
   @override
   void onInit() {
+    getAllBarang();
     super.onInit();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  Future<void> getAllBarang() async {
+    dataBarang.clear();
+    await Future.delayed(Duration(seconds: 1));
+    PBarang().getAllBarang().then((value) {
+      dataBarang.assignAll(value.body);
+    });
+    update();
   }
 
-  @override
-  void onClose() {}
+  void addBarang(var id, var quantity) {
+    PBarang().addBarang(id, quantity);
+  }
 
-  void scanBarcode() async {
+  void scanBarcodeAdd() async {
     try {
       String barcodeResult = await FlutterBarcodeScanner.scanBarcode(
         "#ff6666", // Warna untuk latar belakang scanner
@@ -35,23 +38,15 @@ class HomeController extends GetxController {
       );
 
       if (barcodeResult != '-1') {
-        barcodeResult = barcodeResult;
-        // Lakukan aksi dengan hasil scan barcode disini
-        if (barcodeResult == "Kimbab") {
-          listMenu[0] = listMenu[0] - 1;
-        } else if (barcodeResult == "Odeng") {
-          listMenu[1] = listMenu[1] - 1;
-        } else if (barcodeResult == "Soju") {
-          listMenu[2] = listMenu[2] - 1;
-        } else if (barcodeResult == "Tteokbokki") {
-          listMenu[3] = listMenu[3] - 1;
-        }
-        update();
+        var data = jsonDecode(barcodeResult);
+        var _id = data['id'];
+        var _stok = data['stok'];
 
-        // quick alert dialog to show the result
+        addBarang(_id, _stok);
+
         Get.defaultDialog(
-            title: "Berhasil Mengurangi Stok",
-            middleText: barcodeResult,
+            title: "Berhasil Menambahkan Stok",
+            middleText: "${dataBarang[_id - 1]['nama_barang']} sebanyak $_stok",
             textConfirm: "OK",
             confirmTextColor: Colors.white,
             onConfirm: () => Get.back());
