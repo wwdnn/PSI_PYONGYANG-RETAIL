@@ -1,4 +1,4 @@
-# cashier_pyongyang
+# SUPPLY AND CASHIER
 
 A new Flutter project.
 
